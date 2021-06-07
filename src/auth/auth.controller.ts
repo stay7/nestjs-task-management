@@ -7,7 +7,14 @@ export class AuthController {
   constructor(private authSerice: AuthService) {}
 
   @Post('/signup')
-  signUp(@Body() authCredentialDto: AuthCredentialsDto): Promise<void> {
-    return this.authSerice.signUp(authCredentialDto);
+  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    return this.authSerice.signUp(authCredentialsDto);
+  }
+
+  @Post('/signin')
+  signIn(
+    @Body() authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    return this.authSerice.signIn(authCredentialsDto);
   }
 }
