@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -15,10 +16,13 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { updateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './task.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '../auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator';
 
 @Controller('tasks')
 @UseGuards(AuthGuard()) //protect entire route
 export class TasksController {
+  private logger = new Logger('TasksController');
   constructor(private taskService: TasksService) {}
 
   @Get()
@@ -32,8 +36,11 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDTO): Promise<Task> {
-    return this.taskService.createTask(createTaskDto);
+  createTask(
+    @Body() createTaskDto: CreateTaskDTO,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return this.taskService.createTask(createTaskDto, user);
   }
 
   @Delete('/:id')
